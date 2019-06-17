@@ -1,5 +1,7 @@
 package com.revature.eval.java.core;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +16,17 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String acronym(String phrase) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		StringBuilder acronym = new StringBuilder(" "); 
+		
+	
+		
+		String delimeters = "[^a-zA-Z]+";
+		String[] words = phrase.split(delimeters);
+		
+		for (String word: words)
+			acronym.append(word.charAt(0));
+		return acronym.substring(1)
+				.toString().toUpperCase();
 	}
 
 	/**
@@ -34,8 +45,50 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		String[] point_Letters= {"AEIOULNRST",
+								 "DG",
+								 "BCMP",
+								 "FHVWY",
+								 "K",
+								 "JX",
+		 						 "QZ"};
+		int clusterTracker=0;
+		int wordScore=0;
+		for(String letterCluster: point_Letters)
+		{
+			
+			for(char letter: string.toUpperCase().toCharArray() )
+				if (letterCluster.indexOf(letter)!=-1)
+					switch(clusterTracker)
+					{
+						case 0:
+								wordScore+=1;
+							break;
+						case 1:
+								wordScore+=2;
+							break;
+						case 2:
+								wordScore+=3;
+							break;
+						case 3:
+								wordScore+=4;
+							break;
+						case 4:
+								wordScore+=5;
+							break;
+						case 5:
+								wordScore+=8;
+							break;
+						case 6:
+								wordScore+=10;
+							break;	
+						default:
+					}
+		clusterTracker++;
+		}
+
+		
+		return wordScore;
 	}
 
 	/**
@@ -69,9 +122,23 @@ public class EvaluationService {
 	 * Note: As this exercise only deals with telephone numbers used in
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
-	public String cleanPhoneNumber(String string) {
+	public String cleanPhoneNumber(String string) throws IllegalArgumentException  {
 		// TODO Write an implementation for this method declaration
-		return null;
+		StringBuilder acronym = new StringBuilder(" "); 
+		String number=new String();
+	
+		//String brands = "Orange,Apple,Blackberry";
+		String delimeters = "[\\D]+";
+		String[] numberChunks = string.trim().split(delimeters);
+
+		for (String numberChunk: numberChunks)
+			acronym.append(numberChunk);
+		
+		number=acronym.substring(1) .toString();
+		if(number.length()>11||number.length()<10)
+			throw new IllegalArgumentException("too many digits");
+
+		return number;
 	}
 
 	/**
@@ -85,7 +152,15 @@ public class EvaluationService {
 	 */
 	public Map<String, Integer> wordCount(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		  Map< String,Integer> wordCountTracker =   new HashMap< String,Integer>();
+		  String delimeters = "[^a-z]+";
+		  String[] words = string.trim().split(delimeters);
+		  for(String word:words)
+			  if(wordCountTracker.containsKey(word))
+				  wordCountTracker.put(word, (wordCountTracker.get(word))+1); 
+			  else
+				  wordCountTracker.put(word, new Integer(1)); 
+		return wordCountTracker;
 	}
 
 	/**
@@ -128,6 +203,7 @@ public class EvaluationService {
 
 		public int indexOf(T t) {
 			// TODO Write an implementation for this method declaration
+			
 			return 0;
 		}
 
@@ -163,7 +239,19 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 		// TODO Write an implementation for this method declaration
-		return false;
+		
+		int armstrongNo=0;
+		String strInput = Integer.toString(input); 
+		
+		for(int i=0;i< strInput.length();i++)
+		{
+			armstrongNo += Math.pow(strInput.charAt(i)-48,
+					strInput.length());
+		}
+		if(armstrongNo==input)
+			return true;
+		else
+			return false;
 	}
 
 	/**
@@ -178,7 +266,20 @@ public class EvaluationService {
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		
+		List<Long> primeFactors = new ArrayList<>();
+		
+		for(int i=2; i<=l;i++)
+		{
+			while(l % i == 0)
+            {
+				
+				primeFactors.add((long)i);
+				l=l/i;
+            }
+			
+		}
+		return primeFactors;
 	}
 
 
@@ -208,6 +309,7 @@ public class EvaluationService {
 	 */
 	static class AtbashCipher {
 
+		
 		/**
 		 * Question 8
 		 * 
@@ -216,7 +318,28 @@ public class EvaluationService {
 		 */
 		public static String encode(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			StringBuilder encodedString=new StringBuilder();
+			int wordCounter=0;
+			
+			string =  string.replaceAll("[^a-zA-Z0-9]", "");
+			string=string.toLowerCase();
+			
+			for(int i=0;i< string.length();i++)
+			{
+				if(wordCounter%5==0)
+					encodedString.append(" ");
+				
+				if(string.charAt(i)>=97&&string.charAt(i)<=122){
+					encodedString.append((char)(96+26-(string.charAt(i)-97)));
+					wordCounter++;
+				}
+				else if	(string.charAt(i)>=48&&string.charAt(i)<=57) {
+					encodedString.append(string.charAt(i));
+					wordCounter++;
+				}
+				
+			}
+			return encodedString.substring(1).toString();
 		}
 
 		/**
@@ -227,7 +350,21 @@ public class EvaluationService {
 		 */
 		public static String decode(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			
+			StringBuilder decodedString=new StringBuilder();
+			
+			string =  string.replaceAll("[^a-zA-Z0-9]", "");
+			string=string.toLowerCase();
+			
+			for(int i=0;i< string.length();i++)
+				if(string.charAt(i)>=97&&string.charAt(i)<=122){
+					decodedString.append((char)(96+26-(string.charAt(i)-97)));
+				}
+				else if	(string.charAt(i)>=48&&string.charAt(i)<=57) {
+					decodedString.append(string.charAt(i));
+				}
+			
+			return decodedString.toString();
 		}
 	}
 
@@ -260,6 +397,24 @@ public class EvaluationService {
 	 */
 	public int solveWordProblem(String string) {
 		// TODO Write an implementation for this method declaration
+		String getDigits=string;
+		
+		getDigits = string.replaceAll("[a-zA-Z^?]+","");
+		String[] digits = getDigits.trim().split("[ ]+"); 
+
+		if(string.contains("plus"))
+			return Integer.parseInt(digits[0])+
+					Integer.parseInt(digits[1]);
+		else if(string.contains("minus"))
+			return Integer.parseInt(digits[0])-
+					Integer.parseInt(digits[1]);
+		else if(string.contains("divide"))
+			return Integer.parseInt(digits[0])/
+					Integer.parseInt(digits[1]);
+		else if(string.contains("multi"))
+			return Integer.parseInt(digits[0])*
+					Integer.parseInt(digits[1]);
+//		 
 		return 0;
 	}
 
